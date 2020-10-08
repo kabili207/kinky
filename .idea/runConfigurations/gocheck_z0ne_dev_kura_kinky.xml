@@ -1,0 +1,18 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="gocheck z0ne.dev/kura/kinky" type="GoTestRunConfiguration" factoryName="Go Test" nameIsGenerated="true">
+    <module name="kinky" />
+    <working_directory value="$PROJECT_DIR$" />
+    <go_parameters value="-i -tags test" />
+    <parameters value="--help" />
+    <framework value="gocheck" />
+    <kind value="PACKAGE" />
+    <package value="z0ne.dev/kura/kinky" />
+    <directory value="$PROJECT_DIR$" />
+    <filePath value="$PROJECT_DIR$" />
+    <method v="2">
+      <option name="GoBeforeRunTask" command="generate ./..." />
+      <option name="GoBeforeRunTask" command="vet ./..." />
+      <option name="GoBeforeRunTask" command="run github.com/mgechev/revive -- -config .revive.toml -formatter friendly ./..." />
+    </method>
+  </configuration>
+</component>

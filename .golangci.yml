@@ -1,0 +1,103 @@
+run:
+    build-tags:
+        - dev
+        - test
+        - release
+
+    modules-download-mode: readonly
+
+# all available settings of specific linters
+linters-settings:
+    dupl:
+        # tokens count to trigger issue, 150 by default
+        threshold: 100
+    errcheck:
+        check-blank: true
+    exhaustive:
+        default-signifies-exhaustive: false
+    funlen:
+        lines: 60
+        statements: 40
+    gocritic:
+        # todo: https://go-critic.github.io/overview#checks-overview
+        enabled-checks:
+
+        enabled-tags:
+            - performance
+    godox:
+        keywords:
+            - TODO
+            - FIXME
+            - NOTE
+            - OPTIMIZE
+            - HACK
+            - BUG
+    govet: #revive?
+        check-shadowing: true
+        settings:
+            printf: # analyzer name, run `go tool vet help` to see all analyzers
+                funcs: # run `go tool vet help printf` to see available settings for `printf` analyzer
+                    - (github.com/golangci/golangci-lint/pkg/logutils.Log).Infof
+                    - (github.com/golangci/golangci-lint/pkg/logutils.Log).Warnf
+                    - (github.com/golangci/golangci-lint/pkg/logutils.Log).Errorf
+                    - (github.com/golangci/golangci-lint/pkg/logutils.Log).Fatalf
+
+        enable:
+            - atomicalign
+        enable-all: false
+        disable:
+            - shadow
+        disable-all: false
+    maligned:
+        suggest-new: true
+    nolintlint:
+        require-explanation: true
+        require-specific: true
+    rowserrcheck:
+        packages:
+            - github.com/jmoiron/sqlx
+    testpackage:
+        skip-regexp: (export|internal)_test\.go
+    whitespace:
+        multi-if: true
+        multi-func: true
+
+linters:
+    enable:
+        - deadcode
+        - errcheck
+        - gosimple
+        - govet
+        - ineffassign
+        - structcheck
+        - unused
+        - varcheck
+        - asciicheck
+        - bodyclose
+        - dogsled
+        - dupl
+        - exhaustive
+        - exportloopref
+        - funlen
+        - goconst
+        - gocritic
+        - godox
+        - goerr113
+        - goprintffuncname
+        - gosec
+        - interfacer
+        - maligned
+        - nakedret
+        - nestif
+        - nlreturn
+        - noctx
+        - nolintlint
+        - prealloc
+        - rowserrcheck
+        - scopelint
+        - sqlclosecheck
+        - stylecheck
+        - testpackage
+        - unconvert
+        - unparam
+        - whitespace
