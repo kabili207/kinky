@@ -8,6 +8,7 @@ import (
 	"path"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/mattn/go-mastodon"
 
@@ -74,6 +75,7 @@ func (s *Source) getFiles() []string {
 func (s *Source) pickFile() (string, error) {
 	files := s.getFiles()
 
+	rand.Seed(time.Now().UnixNano())
 	//nolint:gosec
 	calls := rand.Intn(10)
 	index := 0
