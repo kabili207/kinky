@@ -27,6 +27,7 @@ type Config struct {
 		Recursive         bool
 		EnableNSFWSuffix  bool
 		EnableContentText bool
+		EnableNSFWFolder  bool
 	}
 
 	file string

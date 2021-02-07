@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/mattn/go-mastodon"
+	"github.com/bmatcuk/doublestar/v3"
 
 	"z0ne.dev/kura/kinky/config"
 )
@@ -53,23 +54,23 @@ func listContains(list []string, entry string) bool {
 func (s *Source) getFiles() []string {
 	var files []string
 
-	var glob func(string)
-	glob = func(folder string) {
-		//nolint:errcheck
-		globs, _ := filepath.Glob(path.Join(folder, "*"))
-		for _, f := range globs {
-			//nolint:errcheck
-			stat, _ := os.Stat(f)
-			if stat.IsDir() && s.config.Source.Recursive {
-				glob(f)
-			} else if listContains(s.config.Source.Extensions, filepath.Ext(f)[1:]) {
-				files = append(files, f)
-			}
+	if (s.config.Source.Recursive) {
+		files, _ = doublestar.Glob(path.Join(folder, "**"))
+	} else {
+		files, _ = doublestar.Glob(path.Join(folder, "*"))
+	}
+
+	var filteredFiles []string
+	startIndex := 0
+	for idx, el := range files {
+		if os.IsDir(el) {
+			filteredFiles = append(filteredFiles, files[startIndex:idx]...)
+			startIndex = startIndex + 1
 		}
 	}
-	glob(s.config.Source.Folder)
+	filteredFiles = append(filteredFiles, files[startIndex:]...)
 
-	return files
+	return filteredFiles
 }
 
 func (s *Source) pickFile() (string, error) {
@@ -88,9 +89,16 @@ func (s *Source) pickFile() (string, error) {
 }
 
 func (s *Source) nsfwMagix(file string, toot *mastodon.Toot) {
-	fnameParts := strings.Split(filepath.Base(file), ".")
 	if s.config.Source.EnableNSFWSuffix {
+		fnameParts := strings.Split(filepath.Base(file), ".")
 		if len(fnameParts) >= 3 && fnameParts[len(fnameParts)-2] == "nsfw" {
+			toot.Sensitive = true
+		}
+	}
+
+	if s.config.Source.EnableNSFWFolder {
+		parentFolder := filepath.Base(filepath.Dir(file))
+		if parentFolder == "nsfw" {
 			toot.Sensitive = true
 		}
 	}
