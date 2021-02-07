@@ -55,15 +55,16 @@ func (s *Source) getFiles() []string {
 	var files []string
 
 	if (s.config.Source.Recursive) {
-		files, _ = doublestar.Glob(path.Join(folder, "**"))
+		files, _ = doublestar.Glob(path.Join(s.config.Source.Folder, "**"))
 	} else {
-		files, _ = doublestar.Glob(path.Join(folder, "*"))
+		files, _ = doublestar.Glob(path.Join(s.config.Source.Folder, "*"))
 	}
 
 	var filteredFiles []string
 	startIndex := 0
 	for idx, el := range files {
-		if os.IsDir(el) {
+		s, _ := os.Stat(el)
+		if s.IsDir() {
 			filteredFiles = append(filteredFiles, files[startIndex:idx]...)
 			startIndex = startIndex + 1
 		}

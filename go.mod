@@ -4,6 +4,7 @@ go 1.15
 
 require (
 	cdr.dev/slog v1.3.0
+	github.com/bmatcuk/doublestar/v3 v3.0.0
 	github.com/dave/jennifer v1.4.1
 	github.com/go-git/go-git/v5 v5.1.0
 	github.com/jinzhu/configor v1.2.0
