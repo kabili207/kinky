@@ -3,15 +3,14 @@ package source
 import (
 	"fmt"
 	"io/ioutil"
-	"math/rand"
 	"os"
 	"path"
 	"path/filepath"
 	"strings"
-	"time"
 
 	"github.com/mattn/go-mastodon"
 	"github.com/bmatcuk/doublestar/v3"
+	"github.com/averagesecurityguy/random"
 
 	"z0ne.dev/kura/kinky/config"
 )
@@ -77,16 +76,11 @@ func (s *Source) getFiles() []string {
 func (s *Source) pickFile() (string, error) {
 	files := s.getFiles()
 
-	rand.Seed(time.Now().UnixNano())
-	//nolint:gosec
-	calls := rand.Intn(10)
-	index := 0
-	for i := 0; i < calls; i++ {
-		//nolint:gosec
-		index += rand.Intn(len(files))
+	index, err := random.Uint64Range(0, uint64(len(files) - 1));
+	if err != nil {
+		return "", err
 	}
-
-	return files[index%len(files)], nil
+	return files[index], nil
 }
 
 func (s *Source) nsfwMagix(file string, toot *mastodon.Toot) {
