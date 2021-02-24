@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="go build z0ne.dev/kura/kinky/cmd/kinky" type="GoApplicationRunConfiguration" factoryName="Go Application" editBeforeRun="true" nameIsGenerated="true" show_console_on_std_err="true" show_console_on_std_out="true">
+  <configuration default="false" name="go build z0ne.dev/kura/kinky/cmd/kinky" type="GoApplicationRunConfiguration" factoryName="Go Application" editBeforeRun="true" show_console_on_std_err="true" show_console_on_std_out="true">
     <module name="kinky" />
     <working_directory value="$PROJECT_DIR$" />
     <go_parameters value="-i -tags dev" />
