@@ -5,13 +5,13 @@ package config
 import "time"
 
 const (
-	BuildTimestamp     = int64(1602193485)
-	BuildDate          = "2020-10-08T23:44:45+02:00"
-	Version            = "0.1.0"
+	BuildTimestamp     = int64(1614199527)
+	BuildDate          = "2021-02-24T21:45:27+01:00"
+	Version            = "0.1.1"
 	GitDirty           = true
-	GitSha             = "27a0f0bc5280179469832dbc37f3fe1d6f978ce7"
-	GitCommitTimestamp = int64(1602193447)
-	GitCommitDate      = "2020-10-08T23:44:07+02:00"
+	GitSha             = "b64c3ac4f453920c935f04a67061e9dd3941c0b4"
+	GitCommitTimestamp = int64(1612756261)
+	GitCommitDate      = "2021-02-08T04:51:01+01:00"
 	GitBranch          = "master"
 )
 

@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 
-	"z0ne.dev/kura/kinky/source"
+	"z0ne.dev/kura/kinky/sources/fs"
 
 	"cdr.dev/slog"
 	"github.com/mattn/go-mastodon"
@@ -26,14 +26,21 @@ var actionPost = &cli.Command{
 		icfg := ctx.App.Metadata["config"]
 		cfg, ok := icfg.(*config.Config)
 		if icfg == nil || !ok || cfg == nil {
-			return source.ErrNoConfig
+			return fs.ErrNoConfig
 		}
 
-		log.Debug(context.Background(), "building image fetcher")
-		s, err := source.New(cfg)
+		log.Debug(context.Background(), "creating backend engine")
+		s, err := cfg.ParseSource()
 		if err != nil {
 			return err
 		}
+
+		log.Debug(context.Background(), "fetching new image url")
+		img, err := s.GetImageReader()
+		if err != nil {
+			return ErrNoImageFound
+		}
+		defer img.Close()
 
 		log.Debug(context.Background(), "logging in to mastoderp")
 		c := mastodon.NewClient(&mastodon.Config{
@@ -43,29 +50,41 @@ var actionPost = &cli.Command{
 			AccessToken:  cfg.AccessToken,
 		})
 
+		log.Info(context.Background(), "uploading image...", slog.F("file", img))
+		att, err := c.UploadMediaFromReader(context.Background(), img)
+		if err != nil {
+			return err
+		}
+
 		log.Debug(context.Background(), "generating new status")
-		post, err := s.Post(func(file string) (mastodon.ID, error) {
-			log.Info(context.Background(), "Uploading image...", slog.F("file", file))
-			//nolint:govet
-			att, err := c.UploadMedia(context.Background(), file)
-			if err != nil {
-				return mastodon.ID(0), err
+		toot := &mastodon.Toot{
+			Visibility: cfg.PostOptions.Visibility,
+			Sensitive:  cfg.PostOptions.NSFW || s.IsSensitive(),
+			Status:     cfg.PostOptions.Content,
+			MediaIDs:   []mastodon.ID{att.ID},
+		}
+
+		msg, err := s.Caption()
+		if err != nil {
+			return err
+		}
+
+		if msg != "" {
+			if cfg.PostOptions.AppendPostContent {
+				toot.Status += "\n\n" + msg
+			} else {
+				toot.Status = msg
 			}
+		}
 
-			return att.ID, nil
-		})
+		log.Info(context.Background(), "posting new status...")
+		st, err := c.PostStatus(context.Background(), toot)
 		if err != nil {
 			return err
 		}
 
-		log.Info(context.Background(), "Posting new status...")
-		st, err := c.PostStatus(context.Background(), post)
-		if err != nil {
-			return err
-		}
+		log.Info(context.Background(), "status posted", slog.F("url", st.URL))
 
-		log.Info(context.Background(), "Status posted", slog.F("url", st.URL))
-
-		return err
+		return nil
 	},
 }

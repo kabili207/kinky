@@ -1,10 +1,13 @@
 package config
 
 import (
+	"errors"
 	"os"
 
 	"gopkg.in/yaml.v3"
 )
+
+var ErrNoEngine = errors.New("no compatible engine found")
 
 // Config parses the config file
 type Config struct {
@@ -18,19 +21,22 @@ type Config struct {
 		Visibility        string
 		Content           string
 		NSFW              bool
-		AppendPostContent bool
-	}
+		AppendPostContent bool `yaml:"append_post_content"`
+	} `yaml:"post_options"`
 
-	Source struct {
-		Extensions        []string
-		Folder            string
-		Recursive         bool
-		EnableNSFWSuffix  bool
-		EnableContentText bool
-		EnableNSFWFolder  bool
-	}
+	Source yaml.Node
 
 	file string
+}
+
+func (c *Config) ParseSource() (SourceEngine, error) {
+	for _, engine := range sourceEngines {
+		if engine.CanParse(&c.Source) {
+			return engine.GetEngine(&c.Source)
+		}
+	}
+
+	return nil, ErrNoEngine
 }
 
 // Load the configuration

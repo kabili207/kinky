@@ -8,6 +8,8 @@ import (
 	"net/url"
 	"os"
 
+	"z0ne.dev/kura/kinky/sources/fs"
+
 	"github.com/manifoldco/promptui"
 	"github.com/mattn/go-mastodon"
 	"github.com/skratchdot/open-golang/open"
@@ -72,7 +74,7 @@ var actionInit = &cli.Command{
 
 		&cli.PathFlag{
 			Name:    "folder",
-			Aliases: []string{"source", "source-folder", "sf", "f"},
+			Aliases: []string{"fs", "fs-folder", "sf", "f"},
 			Usage:   "Folder with images",
 		},
 	},
@@ -122,14 +124,16 @@ var actionInit = &cli.Command{
 		cfg.PostOptions.Content = "."
 		cfg.PostOptions.AppendPostContent = true
 
-		cfg.Source.Folder = ctx.String("folder")
-		if len(cfg.Source.Folder) == 0 {
-			cfg.Source.Folder = ask("Folder with images", nil)
+		sourceCfg := new(fs.SourceConfig)
+
+		sourceCfg.Folder = ctx.String("folder")
+		if len(sourceCfg.Folder) == 0 {
+			sourceCfg.Folder = ask("Folder with images", nil)
 		}
-		cfg.Source.Recursive = true
-		cfg.Source.EnableNSFWSuffix = true
-		cfg.Source.EnableContentText = true
-		cfg.Source.Extensions = []string{
+		sourceCfg.Recursive = true
+		sourceCfg.EnableNSFWSuffix = true
+		sourceCfg.EnableContentText = true
+		sourceCfg.Extensions = []string{
 			"png",
 			"jpg",
 			"jpeg",

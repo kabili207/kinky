@@ -6,6 +6,10 @@ import (
 	"log"
 	"os"
 
+	"z0ne.dev/kura/kinky/sources/booru"
+
+	"z0ne.dev/kura/kinky/sources/fs"
+
 	"z0ne.dev/kura/kinky/config"
 
 	"cdr.dev/slog"
@@ -44,6 +48,9 @@ func main() {
 	slogger := sloghuman.Make(os.Stdout)
 	stdLog := slog.Stdlib(context.Background(), slogger)
 	log.SetOutput(stdLog.Writer())
+
+	fs.Register()
+	booru.Register()
 
 	app := &cli.App{
 		Usage:       "kinky image bot",
