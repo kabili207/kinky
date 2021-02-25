@@ -6,6 +6,8 @@ import (
 	"log"
 	"os"
 
+	"z0ne.dev/kura/kinky/sources/redditbooru"
+
 	"z0ne.dev/kura/kinky/sources/booru"
 
 	"z0ne.dev/kura/kinky/sources/fs"
@@ -51,6 +53,7 @@ func main() {
 
 	fs.Register()
 	booru.Register()
+	redditbooru.Register()
 
 	app := &cli.App{
 		Usage:       "kinky image bot",
