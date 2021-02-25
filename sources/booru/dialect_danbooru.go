@@ -6,13 +6,6 @@ import (
 	"strings"
 )
 
-type danbooruDialect struct {
-}
-
-func newDanbooruDialect() *danbooruDialect {
-	return new(danbooruDialect)
-}
-
 type danbooruResponse struct {
 	// ID           int    `json:"id"`
 	Source       string `json:"source"`
@@ -65,7 +58,7 @@ type danbooruResponse struct {
 	// PreviewFileURL     string      `json:"preview_file_url"`
 }
 
-func (*danbooruDialect) randomPost(base *url.URL, tags string) (*booruMetadata, error) {
+func danbooruPost(base *url.URL, tags string) (*booruMetadata, error) {
 	postURL, err := url.Parse("/posts/random.json?tags=" + url.QueryEscape(tags))
 	if err != nil {
 		return nil, err
@@ -93,9 +86,9 @@ func (*danbooruDialect) randomPost(base *url.URL, tags string) (*booruMetadata, 
 	}
 
 	return &booruMetadata{
-		Source:       parsed.Source,
-		Rating:       parsed.Rating,
-		TagString:    tagstring,
-		LargeFileURL: parsed.LargeFileURL,
+		Source:    parsed.Source,
+		Rating:    parsed.Rating,
+		TagString: tagstring,
+		Image:     parsed.LargeFileURL,
 	}, nil
 }

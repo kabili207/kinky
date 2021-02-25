@@ -21,7 +21,7 @@ func New(cfg *SourceConfig) (*Source, error) {
 
 func (s *Source) getMeta() (*booruMetadata, error) {
 	if s.metadata == nil {
-		dialect, ok := dialects[s.config.Dialect]
+		post, ok := dialects[s.config.Dialect]
 		if !ok {
 			return nil, ErrDialectNotSupported
 		}
@@ -31,7 +31,7 @@ func (s *Source) getMeta() (*booruMetadata, error) {
 			return nil, err
 		}
 
-		meta, err := dialect.randomPost(baseURL, s.config.Tags)
+		meta, err := post(baseURL, s.config.Tags)
 		if err != nil {
 			return nil, err
 		}
@@ -72,7 +72,7 @@ func (s *Source) GetImageReader() (io.ReadCloser, error) {
 		return nil, err
 	}
 
-	res, err := get(md.LargeFileURL)
+	res, err := get(md.Image)
 	if err != nil {
 		return nil, err
 	}

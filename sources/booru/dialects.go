@@ -6,19 +6,20 @@ import (
 	"net/url"
 )
 
-type dialect interface {
-	randomPost(base *url.URL, tags string) (*booruMetadata, error)
-}
+type dialectPost func(base *url.URL, tags string) (*booruMetadata, error)
 
-var dialects map[string]dialect = map[string]dialect{
-	"danbooru": newDanbooruDialect(),
+var dialects map[string]dialectPost = map[string]dialectPost{
+	"danbooru": danbooruPost, // danbooru, safebooru
+	"gelbooru": gelbooruPost, // gelbooru, rule34.xxx, xbooru.com
+	"e621":     e621Post,     // e621.net
+	"moebooru": moebooruPost, // konachan.net, yande.re
 }
 
 type booruMetadata struct {
-	Source       string `json:"source"`
-	Rating       string `json:"rating"`
-	TagString    string `json:"tag_string"`
-	LargeFileURL string `json:"large_file_url"`
+	Source    string
+	Rating    string
+	TagString string
+	Image     string
 }
 
 func get(url string) (*http.Response, error) {
