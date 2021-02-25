@@ -116,3 +116,5 @@ fabric.properties
 # vendor/
 
 ./config/version.go
+build
+kinky.yml
