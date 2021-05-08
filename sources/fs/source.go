@@ -120,13 +120,18 @@ func (s *Source) Caption() (string, error) {
 	return string(btxt), nil
 }
 
-func (s *Source) GetImageReader() (io.ReadCloser, error) {
+func (s *Source) GetImageReader() (io.ReadCloser, string, error) {
 	fil, err := s.getFile()
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 
-	return os.Open(fil)
+	f, err := os.Open(fil)
+	if err != nil {
+		return nil, "", err
+	}
+
+	return f, path.Base(fil), nil
 }
 
 func (s *Source) IsSensitive() bool {

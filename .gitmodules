@@ -1,0 +1,3 @@
+[submodule "forks/go-mastodon"]
+	path = forks/go-mastodon
+	url = git@github.com:paars/go-mastodon.git

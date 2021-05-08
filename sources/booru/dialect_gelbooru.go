@@ -53,7 +53,7 @@ func gelbooruRandPost(max int) int {
 }
 
 func gelbooruPost(base *url.URL, tags string) (*booruMetadata, error) {
-	postURL, err := url.Parse(fmt.Sprintf("/index.php?page=dapi&s=post&q=index&json=1&limit=100&&pid=%v&tags=%v",
+	postURL, err := url.Parse(fmt.Sprintf("/index.php?page=dapi&s=post&q=index&json=1&limit=100&&pid=%v&tags=%v+sort:random",
 		gelbooruRandPage(),
 		url.QueryEscape(tags)))
 	if err != nil {

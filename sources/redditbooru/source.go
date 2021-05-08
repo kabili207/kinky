@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"path"
 
 	"github.com/averagesecurityguy/random"
 )
@@ -100,22 +101,22 @@ func (s *Source) Caption() (string, error) {
 	return post.Title, nil
 }
 
-func (s *Source) GetImageReader() (io.ReadCloser, error) {
+func (s *Source) GetImageReader() (io.ReadCloser, string, error) {
 	post, err := s.getPost()
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 
 	res, err := get(post.CdnURL)
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 
 	if res.StatusCode != 200 {
-		return nil, ErrImageNotFound
+		return nil, "", ErrImageNotFound
 	}
 
-	return res.Body, nil
+	return res.Body, path.Base(post.CdnURL), nil
 }
 
 func (s *Source) IsSensitive() bool {

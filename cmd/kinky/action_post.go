@@ -36,7 +36,7 @@ var actionPost = &cli.Command{
 		}
 
 		log.Debug(context.Background(), "fetching new image url")
-		img, err := s.GetImageReader()
+		img, fileName, err := s.GetImageReader()
 		if err != nil {
 			return ErrNoImageFound
 		}
@@ -51,7 +51,7 @@ var actionPost = &cli.Command{
 		})
 
 		log.Info(context.Background(), "uploading image...", slog.F("file", img))
-		att, err := c.UploadMediaFromReader(context.Background(), img)
+		att, err := c.UploadMediaFromReaderWithCustomFileName(context.Background(), img, fileName)
 		if err != nil {
 			return err
 		}

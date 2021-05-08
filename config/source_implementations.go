@@ -18,7 +18,7 @@ func RegisterSourceEngine(engine SourceEngineLoader) {
 }
 
 type SourceEngine interface {
-	GetImageReader() (io.ReadCloser, error)
+	GetImageReader() (io.ReadCloser, string, error)
 	IsSensitive() bool
 	Caption() (string, error)
 }

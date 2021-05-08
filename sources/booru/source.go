@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"io"
 	"net/url"
+	"path"
 )
 
 type Source struct {
@@ -66,22 +67,22 @@ func (s *Source) Caption() (string, error) {
 	return buffer.String(), nil
 }
 
-func (s *Source) GetImageReader() (io.ReadCloser, error) {
+func (s *Source) GetImageReader() (io.ReadCloser, string, error) {
 	md, err := s.getMeta()
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 
 	res, err := get(md.Image)
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 
 	if res.StatusCode != 200 {
-		return nil, ErrImageNotFound
+		return nil, "", ErrImageNotFound
 	}
 
-	return res.Body, nil
+	return res.Body, path.Base(md.Image), nil
 }
 
 func (s *Source) IsSensitive() bool {
