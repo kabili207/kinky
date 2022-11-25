@@ -9,6 +9,10 @@ import (
 	"github.com/averagesecurityguy/random"
 )
 
+type gelbooruContainer struct {
+	Post []gelbooruResponse `json:"post"`
+}
+
 type gelbooruResponse struct {
 	Source    string `json:"source"`
 	Tags      string `json:"tags"`
@@ -70,12 +74,12 @@ func gelbooruPost(base *url.URL, tags string) (*booruMetadata, error) {
 	}
 	defer res.Body.Close()
 
-	var parsed []gelbooruResponse
+	var parsed gelbooruContainer
 	if err := json.NewDecoder(res.Body).Decode(&parsed); err != nil {
 		return nil, ErrRequestFailed
 	}
 
-	post := parsed[gelbooruRandPost(len(parsed))]
+	post := parsed.Post[gelbooruRandPost(len(parsed.Post))]
 
 	tagArray := strings.Split(post.Tags, " ")
 	tagstring := ""
