@@ -16,12 +16,13 @@ var dialects map[string]dialectPost = map[string]dialectPost{
 }
 
 type booruMetadata struct {
-	Source    string
-	Rating    string
-	TagString string
-	Image     string
-	Title     string
-	Md5       string
+	Source       string
+	Rating       string
+	Tags         []string
+	FilteredTags []string
+	Image        string
+	Title        string
+	Md5          string
 }
 
 func get(url string) (*http.Response, error) {

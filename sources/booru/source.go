@@ -6,6 +6,9 @@ import (
 	"io"
 	"net/url"
 	"path"
+
+	"github.com/iancoleman/strcase"
+	"github.com/juliangruber/go-intersect/v2"
 )
 
 type Source struct {
@@ -37,10 +40,20 @@ func (s *Source) getMeta() (*booruMetadata, error) {
 			return nil, err
 		}
 
+		meta.FilteredTags = intersect.SimpleGeneric(s.config.ExtractTags, meta.Tags)
+
 		s.metadata = meta
 	}
 
 	return s.metadata, nil
+}
+
+func makeTags(elems []string) string {
+	tagstring := ""
+	for _, t := range elems {
+		tagstring += "#" + strcase.ToCamel(t) + " "
+	}
+	return tagstring
 }
 
 func (s *Source) Caption() (string, error) {
@@ -53,7 +66,7 @@ func (s *Source) Caption() (string, error) {
 		return "", err
 	}
 
-	t := template.New("post")
+	t := template.New("post").Funcs(template.FuncMap{"MakeTags": makeTags})
 	t, err = t.Parse(s.config.Content)
 	if err != nil {
 		return "", err
@@ -100,4 +113,12 @@ func (s *Source) IsSensitive() bool {
 	}
 
 	return md.Rating != "s" && md.Rating != "general"
+}
+
+func (s *Source) GetTags() []string {
+	md, err := s.getMeta()
+	if err != nil {
+		return []string{}
+	}
+	return md.Tags
 }

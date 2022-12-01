@@ -3,7 +3,7 @@ package fs
 import (
 	"fmt"
 	"io"
-	"io/ioutil"
+
 	"os"
 	"path"
 	"path/filepath"
@@ -112,7 +112,7 @@ func (s *Source) Caption() (string, error) {
 		return "", nil
 	}
 
-	btxt, err := ioutil.ReadFile(contentFile)
+	btxt, err := os.ReadFile(contentFile)
 	if err != nil {
 		return "", err
 	}
@@ -159,4 +159,8 @@ func (s *Source) IsSensitive() bool {
 
 func (s *Source) GetMd5Hash() string {
 	return ""
+}
+
+func (s *Source) GetTags() []string {
+	return []string{}
 }

@@ -82,12 +82,6 @@ func gelbooruPost(base *url.URL, tags string) (*booruMetadata, error) {
 
 	post := parsed.Post[gelbooruRandPost(len(parsed.Post))]
 
-	tagArray := strings.Split(post.Tags, " ")
-	tagstring := ""
-	for _, t := range tagArray {
-		tagstring += "#" + t + " "
-	}
-
 	image := post.FileURL
 
 	if image == "" {
@@ -98,11 +92,11 @@ func gelbooruPost(base *url.URL, tags string) (*booruMetadata, error) {
 	}
 
 	return &booruMetadata{
-		Source:    html.UnescapeString(post.Source),
-		Rating:    post.Rating,
-		TagString: tagstring,
-		Image:     image,
-		Md5:       post.Md5,
-		Title:     html.UnescapeString(post.Title),
+		Source: html.UnescapeString(post.Source),
+		Rating: post.Rating,
+		Tags:   strings.Split(post.Tags, " "),
+		Image:  image,
+		Md5:    post.Md5,
+		Title:  html.UnescapeString(post.Title),
 	}, nil
 }

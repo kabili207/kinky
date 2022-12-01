@@ -93,16 +93,10 @@ func moebooruPost(base *url.URL, tags string) (*booruMetadata, error) {
 
 	post := parsed[moebooruRandPost(len(parsed))]
 
-	tagArray := strings.Split(post.Tags, " ")
-	tagstring := ""
-	for _, t := range tagArray {
-		tagstring += "#" + t + " "
-	}
-
 	return &booruMetadata{
-		Source:    post.Source,
-		Rating:    post.Rating,
-		TagString: tagstring,
-		Image:     post.FileURL,
+		Source: post.Source,
+		Rating: post.Rating,
+		Tags:   strings.Split(post.Tags, " "),
+		Image:  post.FileURL,
 	}, nil
 }

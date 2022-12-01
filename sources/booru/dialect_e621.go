@@ -119,17 +119,16 @@ func e621Post(base *url.URL, tags string) (*booruMetadata, error) {
 
 	post := parsed.Posts[gelbooruRandPost(len(parsed.Posts))]
 
-	tagstring := ""
+	var postTags []string
+
 	for _, t := range post.Tags {
-		for _, v := range t {
-			tagstring += "#" + v + " "
-		}
+		postTags = append(postTags, t...)
 	}
 
 	return &booruMetadata{
-		Source:    post.Sources[0],
-		Rating:    post.Rating,
-		TagString: tagstring,
-		Image:     post.File.URL,
+		Source: post.Sources[0],
+		Rating: post.Rating,
+		Tags:   postTags,
+		Image:  post.File.URL,
 	}, nil
 }

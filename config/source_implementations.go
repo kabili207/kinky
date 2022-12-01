@@ -22,4 +22,5 @@ type SourceEngine interface {
 	IsSensitive() bool
 	Caption() (string, error)
 	GetMd5Hash() string
+	GetTags() []string
 }

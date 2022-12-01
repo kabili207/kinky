@@ -79,16 +79,10 @@ func danbooruPost(base *url.URL, tags string) (*booruMetadata, error) {
 		return nil, ErrRequestFailed
 	}
 
-	tagArray := strings.Split(parsed.TagString, " ")
-	tagstring := ""
-	for _, t := range tagArray {
-		tagstring += "#" + t + " "
-	}
-
 	return &booruMetadata{
-		Source:    parsed.Source,
-		Rating:    parsed.Rating,
-		TagString: tagstring,
-		Image:     parsed.LargeFileURL,
+		Source: parsed.Source,
+		Rating: parsed.Rating,
+		Tags:   strings.Split(parsed.TagString, " "),
+		Image:  parsed.LargeFileURL,
 	}, nil
 }
