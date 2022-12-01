@@ -88,6 +88,7 @@ func main() {
 		Commands: []*cli.Command{
 			actionPost,
 			actionInit,
+			actionService,
 		},
 	}
 
