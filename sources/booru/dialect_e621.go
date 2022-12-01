@@ -20,7 +20,7 @@ type e621Response struct {
 		File struct {
 			// Ext    string `json:"ext"`
 			// Height int64  `json:"height"`
-			// Md5    string `json:"md5"`
+			Md5 string `json:"md5"`
 			// Size   int64  `json:"size"`
 			URL string `json:"url"`
 			// Width  int64  `json:"width"`

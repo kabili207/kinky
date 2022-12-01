@@ -14,6 +14,7 @@ type moebooruResponse struct {
 	Rating  string `json:"rating"`
 	Tags    string `json:"tags"`
 	Source  string `json:"source"`
+	Md5     string `json:"md5"`
 
 	// ActualPreviewHeight int64         `json:"actual_preview_height"`
 	// ActualPreviewWidth  int64         `json:"actual_preview_width"`
@@ -36,7 +37,6 @@ type moebooruResponse struct {
 	// JpegHeight          int64         `json:"jpeg_height"`
 	// JpegURL             string        `json:"jpeg_url"`
 	// JpegWidth           int64         `json:"jpeg_width"`
-	// Md5                 string        `json:"md5"`
 	// ParentID            int64         `json:"parent_id"`
 	// PreviewHeight       int64         `json:"preview_height"`
 	// PreviewURL          string        `json:"preview_url"`

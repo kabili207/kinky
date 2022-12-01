@@ -20,6 +20,8 @@ type booruMetadata struct {
 	Rating    string
 	TagString string
 	Image     string
+	Title     string
+	Md5       string
 }
 
 func get(url string) (*http.Response, error) {

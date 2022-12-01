@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"log"
@@ -11,9 +10,9 @@ import (
 	"z0ne.dev/kura/kinky/sources/fs"
 
 	"github.com/manifoldco/promptui"
-	"github.com/mattn/go-mastodon"
-	"github.com/skratchdot/open-golang/open"
+	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
+	"github.com/yitsushi/go-misskey"
 
 	"z0ne.dev/kura/kinky/config"
 )
@@ -86,38 +85,21 @@ var actionInit = &cli.Command{
 		if len(cfg.Instance) == 0 {
 			cfg.Instance = ask("Please enter the instance address", validateURL)
 		}
+		if len(cfg.AccessToken) == 0 {
+			cfg.AccessToken = ask("Please enter the API Key", nil)
+		}
 
-		app, err := mastodon.RegisterApp(context.Background(), &mastodon.AppConfig{
-			Server:       cfg.Instance,
-			ClientName:   config.ApplicationName,
-			RedirectURIs: config.OBB,
-			Scopes:       "write",
-		})
+		_, err := misskey.NewClientWithOptions(
+			misskey.WithAPIToken(cfg.AccessToken),
+			misskey.WithBaseURL("https", cfg.Instance, ""),
+			misskey.WithLogLevel(logrus.DebugLevel),
+		)
+
 		if err != nil {
 			return err
 		}
-		cfg.ClientID = app.ClientID
-		cfg.ClientSecret = app.ClientSecret
 
-		c := mastodon.NewClient(&mastodon.Config{
-			Server:       cfg.Instance,
-			ClientID:     app.ClientID,
-			ClientSecret: app.ClientSecret,
-		})
-
-		fmt.Printf("Login using %v\n", app.AuthURI)
-		if sel("Open in browser?", []string{"Yes", "No"}) == 0 {
-			if err = open.Start(app.AuthURI); err != nil {
-				fmt.Printf("failed to open browser %v\nContinuing...", err)
-			}
-		}
-		authCode := ask("Auth Code", nil)
-
-		if err = c.AuthenticateToken(context.Background(), authCode, config.OBB); err != nil {
-			return err
-		}
-
-		cfg.AccessToken = c.Config.AccessToken
+		//fmt.Printf("Authenticated as %v\n", mk.)
 
 		cfg.PostOptions.Visibility = "unlisted"
 		cfg.PostOptions.NSFW = false

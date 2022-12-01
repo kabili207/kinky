@@ -156,3 +156,7 @@ func (s *Source) IsSensitive() bool {
 
 	return false
 }
+
+func (s *Source) GetMd5Hash() string {
+	return ""
+}

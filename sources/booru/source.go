@@ -85,11 +85,19 @@ func (s *Source) GetImageReader() (io.ReadCloser, string, error) {
 	return res.Body, path.Base(md.Image), nil
 }
 
+func (s *Source) GetMd5Hash() string {
+	md, err := s.getMeta()
+	if err != nil {
+		return ""
+	}
+	return md.Md5
+}
+
 func (s *Source) IsSensitive() bool {
 	md, err := s.getMeta()
 	if err != nil {
 		return false
 	}
 
-	return md.Rating != "s"
+	return md.Rating != "s" && md.Rating != "general"
 }

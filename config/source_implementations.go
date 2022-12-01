@@ -21,4 +21,5 @@ type SourceEngine interface {
 	GetImageReader() (io.ReadCloser, string, error)
 	IsSensitive() bool
 	Caption() (string, error)
+	GetMd5Hash() string
 }

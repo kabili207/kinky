@@ -3,6 +3,7 @@ package booru
 import (
 	"encoding/json"
 	"fmt"
+	"html"
 	"net/url"
 	"strings"
 
@@ -20,10 +21,11 @@ type gelbooruResponse struct {
 	Rating    string `json:"rating"`
 	Directory string `json:"directory"`
 	Image     string `json:"image"`
+	Md5       string `json:"md5"`
+	Title     string `json:"title"`
 
 	// Change        int64       `json:"change"`
 	// CreatedAt     string      `json:"created_at"`
-	// Hash          string      `json:"hash"`
 	// Height        int64       `json:"height"`
 	// ID            int64       `json:"id"`
 	// Owner         string      `json:"owner"`
@@ -34,7 +36,6 @@ type gelbooruResponse struct {
 	// SampleHeight  int64       `json:"sample_height"`
 	// SampleWidth   int64       `json:"sample_width"`
 	// Score         int64       `json:"score"`
-	// Title         string      `json:"title"`
 	// Width         int64       `json:"width"`
 }
 
@@ -97,9 +98,11 @@ func gelbooruPost(base *url.URL, tags string) (*booruMetadata, error) {
 	}
 
 	return &booruMetadata{
-		Source:    post.Source,
+		Source:    html.UnescapeString(post.Source),
 		Rating:    post.Rating,
 		TagString: tagstring,
 		Image:     image,
+		Md5:       post.Md5,
+		Title:     html.UnescapeString(post.Title),
 	}, nil
 }

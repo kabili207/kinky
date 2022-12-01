@@ -11,17 +11,17 @@ var ErrNoEngine = errors.New("no compatible engine found")
 
 // Config parses the config file
 type Config struct {
-	Instance     string
-	ClientID     string
-	ClientSecret string
-	AccessToken  string
+	Instance    string
+	AccessToken string
+	RunInterval int64
 
 	PostOptions struct {
 		// "private", "unlisted" or "public"
 		Visibility        string
 		Content           string
 		NSFW              bool
-		AppendPostContent bool `yaml:"append_post_content"`
+		AppendPostContent bool   `yaml:"append_post_content"`
+		FolderID          string `yaml:"folder_id"`
 	} `yaml:"post_options"`
 
 	Source yaml.Node

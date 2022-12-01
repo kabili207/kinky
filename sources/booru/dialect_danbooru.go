@@ -12,10 +12,10 @@ type danbooruResponse struct {
 	Rating       string `json:"rating"`
 	TagString    string `json:"tag_string"`
 	LargeFileURL string `json:"large_file_url"`
+	Md5          string `json:"md5"`
 	// CreatedAt  string `json:"created_at"`
 	// UploaderID int    `json:"uploader_id"`
 	// Score      int    `json:"score"`
-	// Md5        string `json:"md5"`
 	// LastCommentBumpedAt interface{} `json:"last_comment_bumped_at"`
 	// ImageWidth   int    `json:"image_width"`
 	// ImageHeight  int    `json:"image_height"`
