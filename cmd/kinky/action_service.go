@@ -43,7 +43,10 @@ func runServiceLoop(ctx *cli.Context) error {
 			log.Debug(context.Background(), "Breaking out of service loop:")
 			return ctx.Err()
 		case <-timer.C:
-			postImage(ctx, cfg, log)
+			err := postImage(ctx, cfg, log)
+			if err != nil {
+				log.Error(context.Background(), "Error posting image", slog.F("error", err.Error()))
+			}
 		}
 	}
 }

@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"html"
 	"io"
 	"strings"
@@ -15,6 +16,10 @@ import (
 	"github.com/yitsushi/go-misskey/services/drive/files"
 	"github.com/yitsushi/go-misskey/services/notes"
 	"z0ne.dev/kura/kinky/config"
+)
+
+var (
+	ErrAnimationsDisabled error = errors.New("animations are disabled")
 )
 
 func postImage(ctx *cli.Context, cfg *config.Config, log slog.Logger) error {
@@ -32,6 +37,10 @@ func postImage(ctx *cli.Context, cfg *config.Config, log slog.Logger) error {
 	}
 	defer img.Close()
 
+	if strings.HasSuffix(fileName, ".mp4") {
+		return ErrAnimationsDisabled
+	}
+
 	log.Debug(context.Background(), "logging in to misskey")
 
 	mk, err := misskey.NewClientWithOptions(
@@ -43,14 +52,13 @@ func postImage(ctx *cli.Context, cfg *config.Config, log slog.Logger) error {
 		return err
 	}
 
-	log.Info(context.Background(), "uploading image...", slog.F("file", fileName))
+	log.Info(context.Background(), "pulling image...", slog.F("file", fileName))
 
 	fileContents, err := io.ReadAll(img)
 	if err != nil {
 		return err
 	}
 
-	// TODO: Check existance first
 	hash := s.GetMd5Hash()
 	matches, err := mk.Drive().File().FindByHash(hash)
 
@@ -58,7 +66,9 @@ func postImage(ctx *cli.Context, cfg *config.Config, log slog.Logger) error {
 
 	if len(matches) > 0 {
 		file = matches[0]
+		log.Info(context.Background(), "image hash matched", slog.F("file", fileName), slog.F("file_id", file.ID))
 	} else {
+		log.Info(context.Background(), "uploading image...", slog.F("file", fileName))
 		file, err = mk.Drive().File().Create(files.CreateRequest{
 			FolderID:    cfg.PostOptions.FolderID,
 			Name:        fileName,
