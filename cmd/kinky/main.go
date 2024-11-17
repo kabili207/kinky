@@ -45,8 +45,8 @@ func before(ctx *cli.Context) error {
 }
 
 func main() {
-	slogger := sloghuman.Make(os.Stdout)
-	stdLog := slog.Stdlib(context.Background(), slogger)
+	slogger := slog.Make(sloghuman.Sink(os.Stdout))
+	stdLog := slog.Stdlib(context.Background(), slogger, slog.LevelDebug)
 	log.SetOutput(stdLog.Writer())
 
 	fs.Register()
