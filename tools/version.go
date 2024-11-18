@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path"
 	"strings"
@@ -71,7 +70,7 @@ func main() {
 	}
 
 	now := time.Now()
-	buffer, err := ioutil.ReadFile("VERSION")
+	buffer, err := os.ReadFile("VERSION")
 	if err != nil {
 		panic(fmt.Errorf("failed to read version file: %w", err))
 	}

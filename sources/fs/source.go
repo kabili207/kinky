@@ -11,6 +11,7 @@ import (
 
 	"github.com/averagesecurityguy/random"
 	"github.com/bmatcuk/doublestar/v3"
+	"z0ne.dev/kura/kinky/config"
 )
 
 type Source struct {
@@ -135,26 +136,30 @@ func (s *Source) GetImageReader() (io.ReadCloser, string, error) {
 }
 
 func (s *Source) IsSensitive() bool {
+	return s.GetRating() != config.Safe
+}
+
+func (s *Source) GetRating() config.Rating {
 	fil, err := s.getFile()
 	if err != nil {
-		return false
+		return config.Safe
 	}
 
 	if s.config.EnableNSFWSuffix {
 		fnameParts := strings.Split(filepath.Base(fil), ".")
 		if len(fnameParts) >= 3 && fnameParts[len(fnameParts)-2] == "nsfw" {
-			return true
+			return config.Explicit
 		}
 	}
 
 	if s.config.EnableNSFWFolder {
 		parentFolder := filepath.Base(filepath.Dir(fil))
 		if parentFolder == "nsfw" {
-			return true
+			return config.Explicit
 		}
 	}
 
-	return false
+	return config.Safe
 }
 
 func (s *Source) GetMd5Hash() string {

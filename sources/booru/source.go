@@ -9,6 +9,7 @@ import (
 
 	"github.com/iancoleman/strcase"
 	"github.com/juliangruber/go-intersect/v2"
+	"z0ne.dev/kura/kinky/config"
 )
 
 type Source struct {
@@ -107,12 +108,29 @@ func (s *Source) GetMd5Hash() string {
 }
 
 func (s *Source) IsSensitive() bool {
+	return s.GetRating() != config.Safe
+}
+
+func (s *Source) GetRating() config.Rating {
 	md, err := s.getMeta()
 	if err != nil {
-		return false
+		return config.Safe
 	}
 
-	return md.Rating != "s" && md.Rating != "general"
+	switch md.Rating {
+	case "s":
+	case "general":
+		return config.Safe
+	case "sensitive":
+		return config.Sensitive
+	case "q":
+	case "questionable":
+		return config.Questionable
+	case "e":
+	case "explicit":
+		return config.Explicit
+	}
+	return config.Explicit
 }
 
 func (s *Source) GetTags() []string {

@@ -98,10 +98,21 @@ func postImage(ctx *cli.Context, cfg *config.Config, log slog.Logger) error {
 		msg = cfg.PostOptions.Content
 	}
 
+	var cw core.String = nil
+	switch rating := s.GetRating(); rating {
+	case config.Sensitive:
+		cw = core.NewString("Suggestive content")
+	case config.Questionable:
+		cw = core.NewString("Nudity and/or sexually suggestive content")
+	case config.Explicit:
+		cw = core.NewString("Sexually explicit content")
+	}
+
 	note := notes.CreateRequest{
 		Text:       core.NewString(msg),
 		Visibility: models.VisibilityPublic,
 		FileIDs:    []string{file.ID},
+		CW:         cw,
 	}
 
 	log.Info(context.Background(), "posting new status...")

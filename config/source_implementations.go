@@ -8,6 +8,15 @@ import (
 
 var sourceEngines []SourceEngineLoader
 
+type Rating int
+
+const (
+	Safe Rating = iota
+	Sensitive
+	Questionable
+	Explicit
+)
+
 type SourceEngineLoader interface {
 	CanParse(config *yaml.Node) bool
 	GetEngine(config *yaml.Node) (SourceEngine, error)
@@ -23,4 +32,5 @@ type SourceEngine interface {
 	Caption() (string, error)
 	GetMd5Hash() string
 	GetTags() []string
+	GetRating() Rating
 }
